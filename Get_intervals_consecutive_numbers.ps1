@@ -36,6 +36,5 @@ while ($i -lt $Length) {
 	$NumbersInterval+=$NumbersInterval_temp
 }
 
-
 # Result on CLI for copy / paste
 $NumbersInterval
