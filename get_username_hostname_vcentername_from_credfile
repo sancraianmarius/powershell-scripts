@@ -1,0 +1,31 @@
+# Get username, hostname, vCenter short name from XML credential files
+# v1 03.09.2019 - Initial version
+#
+# Replace $CredentialDir, $CSVFile with the needed values
+
+$CredentialDir = 'PATH'
+$CSVFile = 'PATH'+'.csv'
+
+# Load the XML files
+Get-ChildItem -Path $Credentialdir -Filter *xml | ForEach-Object {
+
+ # Get required values
+ $hostname = Select-Xml -XPath '//host' -Path $_.FullName -ErrorAction SilentlyContinue
+ $username = Select-Xml -XPath '//username' -Path $_.FullName -ErrorAction SilentlyContinue
+  $vCenterShort = $_.BaseName
+  if ($hostname -and $username) {
+    New-Object PSObject -Property @{
+      Host = $hostname.Node.InnerText
+      User = $username.Node.InnerText
+      vCenter_short_name = $vCenterShort
+    }
+  }
+  
+ # Clear variables
+ Clear-Variable hostname, username, vCenterShort
+   
+
+# Export custom object to CSV 
+} | Export-Csv -Path $CSVFile -NoTypeInformation -Verbose
+
+
